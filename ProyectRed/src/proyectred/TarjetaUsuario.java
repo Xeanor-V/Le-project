@@ -9,15 +9,15 @@ import javax.swing.border.LineBorder;
 public class TarjetaUsuario extends JPanel implements Serializable{
     private JLabel LNickname,LScore,LImageUser,LBackground,LDead,LMe;    
     private String Nickname;
-    private int Score,Life;
     private ImageIcon ImageUser,Background,ImageMe;
     private JProgressBar PLife;
-    private int Action;
+    private int Score,Life,Action;
     public int CREATE_CARD=1;
     public int UPDATE_CARD=2;
     public int DELETE_CARD=3;
     
     public TarjetaUsuario(String nickname,int score,int life,ImageIcon imageuser){
+        //CODIGO DEL ACOMODO GRAFICO DE LA TARJETA DE USUARIO
         //------------------------------------------------------------
         Nickname    = nickname;
         Score       = score;
@@ -87,17 +87,17 @@ public class TarjetaUsuario extends JPanel implements Serializable{
         //------------------------------------------------------------
     }
     
-    public void Me(){
+    public void Me(){//AGREGA UN ICONO QUE IDENTIFICA LA TARJETA COMO PROPIA
         LMe.setVisible(true);
         paintComponents(getGraphics());
     }
     
-    public void Other(){
+    public void Other(){//ESTABLECE QUE LA TARJETA ES DE ALGUIEN MAS
         LMe.setVisible(false);
         paintComponents(getGraphics());
     }
     
-    public void Dead(){
+    public void Dead(){//CAMBIA LA APARIENCIA DE LA TARJETA
         LNickname.setBounds(20, 20, 200, 30);
         LDead.setBounds(20, 60, 200, 30);
         LNickname.setFont(new Font("Bauhaus 93", Font.ITALIC, 34));

@@ -4,10 +4,10 @@ import java.net.*;
 import javax.swing.*;
 
 public class Red {
-    private Socket cliente;
-    private ObjectInputStream oisNet;
-    private ObjectOutputStream oosNet;
-    private int puerto=5000;
+    private Socket Cliente;
+    private ObjectInputStream InputStream;
+    private ObjectOutputStream OutputStream;
+    private int Puerto=5000;
     private LectorRed LR;
     private boolean ISC=false;
     
@@ -16,52 +16,38 @@ public class Red {
         this.LR=LR;
         Conexion();
     }
-
 //******************************************************************************    
-    public void Conexion() { 
+    public void Conexion() {//CONECTA AL USUARIO CON EL SERVIDOR 
         int i=0;
-        //String host = JOptionPane.showInputDialog("Introdusca la conexion", "localhost");
-        String host = "localhost";
-        while(i<10){	
-            System.out.println("Esperando por el servidor . . ."); i=10; ISC=true;
-            try {
-		cliente=new Socket(host, puerto);
-            } catch ( IOException e) {	System.out.println("Fallo creacion Socket"); i=i+1; ISC=false;      }
+        while(i<10){//Intento de conexion con el servidor 	
+            System.out.println("1.-ESPERANDO POR EL SERVIDOR . . ."); i=10; ISC=true;
+            try {Cliente=new Socket("localhost", Puerto);
+            } catch ( IOException e) {	System.out.println("FALLO LA CREACION DEL SOCKET"); i=i+1; ISC=false;      }
         }
-        
-        if(ISC)
-            System.out.println("Connectado al servidor.");
-        
-        try {
-            oisNet = getOISNet(cliente.getInputStream());
-            oosNet = getOOSNet(cliente.getOutputStream()); 
+        //----------------------------------------------------------------------
+        if(ISC)     System.out.println("2.-CONECTANDO AL SERVIDOR.");
+        //----------------------------------------------------------------------
+        try {//Creacion de los fujos 
+            InputStream = getOISNet(Cliente.getInputStream());
+            OutputStream = getOOSNet(Cliente.getOutputStream()); 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error al crear los fujos de objeto"+e);
+            System.out.println("ERROR AL CREAR LOS FLUJOS"+e);
         }
-        
-        (new Thread( new LecturaEntrante(LR, oisNet) )).start();
+        //----------------------------------------------------------------------
+        (new Thread( new LecturaEntrante(LR, InputStream) )).start();
 }  
 //******************************************************************************    
-    public boolean IsConnected() { 
-        return ISC;
-    }  
-    
-//******************************************************************************
-    public void MandarARed(Object ObjetoX) {     
+    public void MandarARed(Object ObjetoX) {//MANDA INFORMACION AL SERVIDOR     
         try {
-            oosNet.writeObject(ObjetoX);        
-            oosNet.flush();
+            OutputStream.writeObject(ObjetoX);        
+            OutputStream.flush();
         } catch (IOException ex) { ex.printStackTrace(); }
     }
 //******************************************************************************    
-    ObjectOutputStream getOOSNet(OutputStream os) throws IOException {
-		return new ObjectOutputStream(os);
-    }
-    
-    ObjectInputStream getOISNet(InputStream is) throws IOException {
-        	return new ObjectInputStream(is);
-    }
-    
+    ObjectOutputStream getOOSNet(OutputStream os) throws IOException {  return new ObjectOutputStream(os);    }
+    ObjectInputStream getOISNet(InputStream is) throws IOException {    return new ObjectInputStream(is);    }
+//******************************************************************************
+    public boolean IsConnected() {      return ISC;     }  
 //******************************************************************************
 }

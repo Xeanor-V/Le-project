@@ -11,25 +11,25 @@ public class Server {
         ObjectInputStream LECTOR;
         Socket SOCKET;
 //------------------------------------------------------------------------------
-        public ManagerClient(Socket ClientSocket){
+        public ManagerClient(Socket ClientSocket){//CLASE QUE MANEJA LOS FLUJOS
             try {
                 SOCKET = ClientSocket;
                 LECTOR = new ObjectInputStream(SOCKET.getInputStream());      
-            } catch(Exception ex) {
-                System.out.println("---- Excepcion Lector de Servidor ----" + ex);
-                ex.printStackTrace();
-            }
+            } catch(Exception ex) {System.out.println("---- EXCEPCION DE LECTOR DE SERVIDOR ----" + ex);}
           }
 //------------------------------------------------------------------------------
-        public void run(){
+        public void run(){//CHECA SI EL FLUJO RECIVE INFORMACION 
             TarjetaUsuario TarjetaX;
             try {
                 while (true) {
                     TarjetaX = (TarjetaUsuario) LECTOR.readObject();
+                    
                     if(TarjetaX.getAction()==TarjetaX.CREATE_CARD)
                         AgregarTarjeta(TarjetaX);
+                    
                     else if(TarjetaX.getAction()==TarjetaX.UPDATE_CARD)
                         ModificarTarjeta(TarjetaX);
+                    
                     else if(TarjetaX.getAction()==TarjetaX.DELETE_CARD)
                         EliminarTarjeta(TarjetaX);
                     }
@@ -39,7 +39,7 @@ public class Server {
     } // Cierre
 
 //******************************************************************************    
-    private void go(){
+    private void go(){//VERIFICA SI HAY NUEVOS USUARIOS, SI HAY NUEVOS LES GENERA UN MANAGERCLIENT
         try {
             ServerSocket ServerSock = new ServerSocket(5000);
             while(true){
@@ -53,11 +53,11 @@ public class Server {
                 Thread t = new Thread(new ManagerClient(ClientSocket));
                 t.start();
 
-                System.out.println("Coneccion Establecida");                     }  
+                System.out.println("CONECCION ESTABLECIDA");                     }  
         } catch(Exception ex) { ex.printStackTrace(); }
     }
 //******************************************************************************
-    private void Comunicar(Object ObjetoX) {
+    private void Comunicar(Object ObjetoX) {//COMUNICA A TODOS LOS USUARIO UN OBJETO 
         for(int i=0;i<ObjectOutStream.size();i++){
             try {
                 ObjectOutStream.get(i).writeObject(ObjetoX);
@@ -66,7 +66,7 @@ public class Server {
         }
     }
 //******************************************************************************
-    private void ComunicarA(Object ObjetoX, ObjectOutputStream ObjectOutStreamX) {
+    private void ComunicarA(Object ObjetoX, ObjectOutputStream ObjectOutStreamX) {//COMUNICA A UN USUARIO EN PARTICULAR
             try {
                 ObjectOutputStream Writer = ObjectOutStreamX;
                 Writer.writeObject(ObjetoX);
@@ -74,7 +74,7 @@ public class Server {
             } catch(Exception ex) { ex.printStackTrace(); }
     }
 //******************************************************************************
-    private void AgregarTarjeta(TarjetaUsuario Tarjeta) {
+    private void AgregarTarjeta(TarjetaUsuario Tarjeta){//AGREGA TARJETASUSUARIO A LA LISTA DEL TARJETAS DEL SERVIDOR
         boolean E = false;
         for(int i=0;i<TarjetasJuego.size();i++)
             if(TarjetasJuego.get(i).getNickname().equals(Tarjeta.getNickname()))
@@ -84,7 +84,7 @@ public class Server {
             Comunicar(Tarjeta);         }
     }
 //******************************************************************************
-    private void ModificarTarjeta(TarjetaUsuario Tarjeta) {
+    private void ModificarTarjeta(TarjetaUsuario Tarjeta){//CAMBIA LA INFO DE UNA TARJETA A LA LISTA DEL SERVIDOR
         for(int i=0;i<TarjetasJuego.size();i++)
             if(TarjetasJuego.get(i).getNickname().equals(Tarjeta.getNickname())){
                 TarjetasJuego.remove(i);
@@ -94,7 +94,7 @@ public class Server {
                 }
     }
 //******************************************************************************
-    private void EliminarTarjeta(TarjetaUsuario Tarjeta) {
+    private void EliminarTarjeta(TarjetaUsuario Tarjeta){//ELIMINA TARJETASUSUARIO DE LA LISTA DEL TARJETAS DEL SERVIDOR
         for(int i=0;i<TarjetasJuego.size();i++)
             if(TarjetasJuego.get(i).getNickname().equals(Tarjeta.getNickname())){
                 TarjetasJuego.remove(i);
