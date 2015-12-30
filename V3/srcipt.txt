@@ -1,0 +1,7 @@
+cd C:\Users\Dell\Documents\Programacion\Java\Proyect
+javac Espacio.java
+java Espacio
+
+//en caso de que no compile
+javac *.java
+java Espacio.java
